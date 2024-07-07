@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 app.get('/posts',async (req, res) => {
     try {
         console .log("get posts");
-        res.status(200).send(await posts_dao.getPosts());    
+        res.status(200).json(await posts_dao.getPosts());    
         console.log("get posts 2");
     } catch (error) {
         res.status(500).send(error);
@@ -36,6 +36,26 @@ app.post('/posts', async (req, res) => {
     
     }
     );
+
+app.put('/posts/like/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+        const data = await posts_dao.updatePost(id);
+        res.status(200).send(data);    
+    } catch (error) {
+        res.status(500).send(error);
+    }
+    });
+
+    app.delete('/posts/:id', async (req, res) => {
+        const {id} = req.params;
+        try {
+            const data = await posts_dao.deletePost(id);
+            res.status(200).send(data);    
+        } catch (error) {
+            res.status(500).send(error);
+        }
+        });
 
 
 app.listen(PORT, () => {

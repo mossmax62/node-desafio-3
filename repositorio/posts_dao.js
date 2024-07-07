@@ -22,7 +22,7 @@ const getPostById = async (id) => {
 
 const createPost = async (titulo, url, descripcion) => {
     try {
-        const data = await db.query('INSERT INTO posts (titulo, img, descripcion) VALUES ($1, $2, $3);', [titulo, url, descripcion]);
+        const data = await db.query('INSERT INTO posts (titulo, img, descripcion, likes) VALUES ($1, $2, $3, 0);', [titulo, url, descripcion]);
         return data.rows;    
     } catch (error) {
         console.log(error);
@@ -31,12 +31,25 @@ const createPost = async (titulo, url, descripcion) => {
     
 }
 
-const updatePost = async (id, title, content) => {
-    return await db.query('UPDATE posts SET title = $1, content = $2 WHERE id = $3;', [title, content, id]);
+const updatePost = async (id) => {
+    try {
+        console.log("updating post dao " + id);
+        return await db.query('UPDATE posts SET likes = likes + 1 WHERE id = $1;', [id]);    
+    } catch (error) {
+        console.log(error);
+        throw new Error("error al actualizar el post");
+    }
+    
 }
 
 const deletePost = async (id) => {
-    return await db.query('DELETE FROM posts WHERE id = $1;', [id]);
+    try {
+        return await db.query('DELETE FROM posts WHERE id = $1;', [id]);    
+    } catch (error) {
+        console.log(error);
+        throw new Error("error al eliminar el post");
+    }
+    
 }
 
 module.exports = { getPosts, getPostById, createPost, updatePost, deletePost };
